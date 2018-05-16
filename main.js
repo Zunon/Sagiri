@@ -5,24 +5,24 @@ client.on(`ready`, () => {
   console.log(`Logged in as ${client.user.tag}!`);
 });
 
-client.on(`message`, msg => {
+client.on(`message`, message => {
   if(message.content.startsWith('!')) {
-    var text = msg.content.toLowerCase().split(` `);
+    var text = message.content.toLowerCase().split(` `);
     var command = text[0].substr(1);
     text.shift();
     
     switch(command) {
       case `joinchannel`:
-        joinChannel(msg, text);
+        joinChannel(message, text);
         break;
       case `leavechannel`:
-        leaveChannel(msg, text);
+        leaveChannel(message, text);
         break;
       case `doroles`:
-        doRoles(msg, text);
+        doRoles(message, text);
         break;
       default:
-        msg.reply("sorry I didn't recognize that command.");
+        message.reply("sorry I didn't recognize that command.");
     }
   }
 });
@@ -37,36 +37,36 @@ function joinChannel(message, text) {
       .addRole(role)
       .then(updated => {
         console.log(`Added ${channelName} for ${message.member.displayName}`);
-        msg.reply(`Added you to the \`${channelName}\` channel!`);
+        message.reply(`Added you to the \`${channelName}\` channel!`);
       },
       error => {
         console.error(`could not add ${channelName} for ${message.member.displayName}!`);
-        msg.reply(`Could not find that channel!`);
+        message.reply(`Could not find that channel!`);
       });
   });
 }
 
 function leaveChannel(message, text) {
   text.forEach( channelName => {
-    role = msg.guild.roles.find(`name`, channelName);
-    msg.member
+    role = message.guild.roles.find(`name`, channelName);
+    message.member
       .removeRole(role)
       .then(updated => {
         console.log(`Removed ${channelName} for ${message.member.displayName}`);
-        msg.reply(`removed you from the \`${channelName}\` channel!`);
+        message.reply(`removed you from the \`${channelName}\` channel!`);
       },
 
       error => {
-        console.error(`could not remove ${channelName} for ${msg.member.displayName}!`);
-        msg.reply(`could not find that channel!`);
+        console.error(`could not remove ${channelName} for ${message.member.displayName}!`);
+        message.reply(`could not find that channel!`);
       });
   });
 }
 
 function doRoles(message, text) {
   text.forEach(channelName => {
-    role = msg.guild.roles.find(`name`, channelName);
-    channel = msg.guild.channels.find(`name`, channelName);
+    role = message.guild.roles.find(`name`, channelName);
+    channel = message.guild.channels.find(`name`, channelName);
     channel.overwritePermissions(role, {READ_MESSAGES: true})
       .then(updated => {
         console.log(`Did permissions for: ${channelName}`);
