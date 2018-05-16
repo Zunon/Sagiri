@@ -6,20 +6,24 @@ client.on(`ready`, () => {
 });
 
 client.on(`message`, msg => {
-  var text = msg.content.toLowerCase().split(` `);
-  var command = text[0];
-  text.shift();
-  
-  switch(command) {
-    case `!joinchannel`:
-      joinChannel(msg, text);
-      break;
-    case `!leavechannel`:
-      leaveChannel(msg, text);
-      break;
-    case `!doroles`:
-      doRoles(msg, text);
-      break;
+  if(message.content.startsWith('!')) {
+    var text = msg.content.toLowerCase().split(` `);
+    var command = text[0].substr(1);
+    text.shift();
+    
+    switch(command) {
+      case `joinchannel`:
+        joinChannel(msg, text);
+        break;
+      case `leavechannel`:
+        leaveChannel(msg, text);
+        break;
+      case `doroles`:
+        doRoles(msg, text);
+        break;
+      default:
+        msg.reply("sorry I didn't recognize that command.");
+    }
   }
 });
 
