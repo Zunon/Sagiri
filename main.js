@@ -47,7 +47,6 @@ function leaveChannel(message, text) {
     role = msg.guild.roles.find(`name`, channelName);
     msg.member
       .removeRole(role)
-
       .then(updated => {
         console.log(`Removed ${channelName} for ${message.member.displayName}`);
         msg.reply(`removed you from the \`${channelName}\` channel!`);
@@ -65,9 +64,12 @@ function doRoles(message, text) {
     role = msg.guild.roles.find(`name`, channelName);
     channel = msg.guild.channels.find(`name`, channelName);
     channel.overwritePermissions(role, {READ_MESSAGES: true})
-      .catch(error => console.error)
       .then(updated => {
         console.log(`Did permissions for: ${channelName}`);
+      },
+    
+      error => {
+        console.error(`Couldn't manage ${channelName}!`)
       }); 
   })
 }
