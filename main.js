@@ -6,8 +6,9 @@ client.on('ready', () => {
 });
 
 client.on('message', msg => {
-  if (msg.content.toLowerCase().startsWith('!joinchannel')) {
-    var channelName = msg.content.split(' ')[1];
+  var text = msg.content.toLowerCase();
+  if (text.startsWith('!joinchannel')) {
+    var channelName = text.split(' ')[1];
     role = msg.guild.roles.find('name', channelName);
     msg.member
       .addRole(role)
@@ -19,9 +20,8 @@ client.on('message', msg => {
         console.error('could not add ' + channelName + ' for ' + msg.member.displayName + '!');
         msg.reply('Could not find that channel!');
       });
-  }
-  if (msg.content.startsWith('!<>doRoles')) {
-    var channelName = msg.content.split(' ')[1];
+  } else if (text.startsWith('!<>doRoles')) {
+    var channelName = text.split(' ')[1];
     role = msg.guild.roles.find('name', channelName);
     channel = msg.guild.channels.find('name', channelName);
     channel.overwritePermissions(role, {READ_MESSAGES: true})
@@ -29,6 +29,19 @@ client.on('message', msg => {
       .then(updated => {
         console.log('Did permissions for: ' + channelName);
       }); 
+  } else if(text.startsWith('!leavechannel')) {
+    var channelName = text.split(' ')[1];
+    role = msg.guild.roles.find('name', channelName);
+    msg.member
+      .removeRole(role)
+      .then(updated => {
+        console.log('Removed ' + channelName + ' for ' + msg.member.displayName);
+        msg.reply('Removed you from the `' + channelName + '` channel!');
+      },
+      error => {
+        console.error('could not remove ' + channelName + ' for ' + msg.member.displayName + '!');
+        msg.reply('Could not find that channel!');
+      });
   }
 });
 
