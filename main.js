@@ -6,7 +6,7 @@ client.on('ready', () => {
 });
 
 client.on('message', msg => {
-  if (msg.content.startsWith('!joinchannel')) {
+  if (msg.content.toLowerCase().startsWith('!joinchannel')) {
     var channelName = msg.content.split(' ')[1];
     role = msg.guild.roles.find('name', channelName);
     msg.member
@@ -25,7 +25,7 @@ client.on('message', msg => {
     role = msg.guild.roles.find('name', channelName);
     channel = msg.guild.channels.find('name', channelName);
     channel.overwritePermissions(role, {READ_MESSAGES: true})
-      .catch(error => cosole.error)
+      .catch(error => console.error)
       .then(updated => {
         console.log('Did permissions for: ' + channelName);
       }); 
