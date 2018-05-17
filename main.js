@@ -20,7 +20,7 @@ client.on(`message`, message => {
         break
       case `doroles`:
         if (authenticate(message.member)) {
-          doRoles(message, text)
+          doRoles(message)
         } else {
             message.reply('you must be an authorized user to use this command!')
         }
@@ -77,18 +77,21 @@ function leaveChannel(message, text) {
   })
 }
 
-function doRoles(message, text) {
-  text.forEach(channelName => {
-    role = message.guild.roles.find(`name`, channelName)
-    channel = message.guild.channels.find(`name`, channelName)
-    channel.overwritePermissions(role, {READ_MESSAGES: true})
-      .then(updated => {
-        console.log(`Did permissions for: ${channelName}`)
-      },
-    
-      error => {
-        console.error(`Couldn't manage ${channelName}!`)
-      }) 
+function doRoles(message) {
+  var guild = message.guild;
+  deleteAllRoles(guild);
+  client.channels.get(`442729303935811584`).children.forEach(channel => {
+    channel.roles
+    guild.createRole({name: channel.name}).then(role => {
+      channel.overwritePermissions(role, {READ_MESSAGES: true})
+        .then(() => {
+          console.log(`Did permissions for: ${channel.name}`)
+        },
+        () => {
+          console.error(`Couldn't manage ${channel.name}`)
+        }  
+      )
+    })
   })
 }
 
@@ -102,4 +105,10 @@ function prune(channel, numberOfMessages) {
 
 function authenticate(user) {
   return user.id === '95623672072511488'
+}
+
+function deleteAllRoles(guild) {
+  guild.roles.forEach(role => {
+    role.delete();
+  })
 }
