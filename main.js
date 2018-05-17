@@ -21,6 +21,9 @@ client.on(`message`, message => {
       case `doroles`:
         doRoles(message, text);
         break;
+      case `prune`:
+        prune(message.channel, parseInt(text[0]) + 1);
+        break;
       default:
         message.reply("sorry I didn't recognize that command.");
     }
@@ -79,4 +82,16 @@ function doRoles(message, text) {
         console.error(`Couldn't manage ${channelName}!`)
       }); 
   })
+}
+
+function prune(channel, numberOfMessages) {
+  channel.fetchMessages({ limit: numberOfMessages }).then(messages => {
+    messages.forEach(message => {
+      message.delete();
+    })
+  })
+}
+
+function authenticate(user) {
+
 }
