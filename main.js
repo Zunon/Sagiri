@@ -1,105 +1,105 @@
-const Discord = require(`discord.js`);
-const client = new Discord.Client();
+const Discord = require(`discord.js`)
+const client = new Discord.Client()
 
 client.on(`ready`, () => {
-  console.log(`Logged in as ${client.user.tag}!`);
-});
+  console.log(`Logged in as ${client.user.tag}!`)
+})
 
 client.on(`message`, message => {
   if(message.content.startsWith('!')) {
-    var text = message.content.toLowerCase().split(` `);
-    var command = text[0].substr(1);
-    text.shift();
+    var text = message.content.toLowerCase().split(` `)
+    var command = text[0].substr(1)
+    text.shift()
     
     switch(command) {
       case `joinchannel`:
-        joinChannel(message, text);
-        break;
+        joinChannel(message, text)
+        break
       case `leavechannel`:
-        leaveChannel(message, text);
-        break;
+        leaveChannel(message, text)
+        break
       case `doroles`:
         if (authenticate(message.member)) {
-          doRoles(message, text);
+          doRoles(message, text)
         } else {
             message.reply('you must be an authorized user to use this command!')
         }
-        break;
+        break
       case `prune`:
         if (authenticate(message.member)) {
-          prune(message.channel, parseInt(text[0]) + 1);
+          prune(message.channel, parseInt(text[0]) + 1)
         } else {
           message.reply('you must be an authorized user to use this command!')
         }
-        break;
+        break
       default:
-        message.reply("sorry I didn't recognize that command.");
+        message.reply("sorry I didn't recognize that command.")
     }
   }
-});
+})
 
 client.login(`NDQ2NDEwODkwNTY5MzE4NDAw.Dd4oEQ.yCm3lDUQuEdWVAeyFyhWZiu3Djg`)
   .catch(error => {
-    console.error(`Couldn't log in!\n${error}`);
-    process.exit();
-  });
+    console.error(`Couldn't log in!\n${error}`)
+    process.exit()
+  })
 
 function joinChannel(message, text) {
   text.forEach(channelName => {
-    var role = message.guild.roles.find(`name`, channelName);
+    var role = message.guild.roles.find(`name`, channelName)
     message.member
       .addRole(role)
       .then(updated => {
-        console.log(`Added ${channelName} for ${message.member.displayName}`);
-        message.reply(`Added you to the \`${channelName}\` channel!`);
+        console.log(`Added ${channelName} for ${message.member.displayName}`)
+        message.reply(`Added you to the \`${channelName}\` channel!`)
       },
       error => {
-        console.error(`could not add ${channelName} for ${message.member.displayName}!`);
-        message.reply(`Could not find that channel!`);
-      });
-  });
+        console.error(`could not add ${channelName} for ${message.member.displayName}!`)
+        message.reply(`Could not find that channel!`)
+      })
+  })
 }
 
 function leaveChannel(message, text) {
   text.forEach( channelName => {
-    role = message.guild.roles.find(`name`, channelName);
+    role = message.guild.roles.find(`name`, channelName)
     message.member
       .removeRole(role)
       .then(updated => {
-        console.log(`Removed ${channelName} for ${message.member.displayName}`);
-        message.reply(`removed you from the \`${channelName}\` channel!`);
+        console.log(`Removed ${channelName} for ${message.member.displayName}`)
+        message.reply(`removed you from the \`${channelName}\` channel!`)
       },
 
       error => {
-        console.error(`could not remove ${channelName} for ${message.member.displayName}!`);
-        message.reply(`could not find that channel!`);
-      });
-  });
+        console.error(`could not remove ${channelName} for ${message.member.displayName}!`)
+        message.reply(`could not find that channel!`)
+      })
+  })
 }
 
 function doRoles(message, text) {
   text.forEach(channelName => {
-    role = message.guild.roles.find(`name`, channelName);
-    channel = message.guild.channels.find(`name`, channelName);
+    role = message.guild.roles.find(`name`, channelName)
+    channel = message.guild.channels.find(`name`, channelName)
     channel.overwritePermissions(role, {READ_MESSAGES: true})
       .then(updated => {
-        console.log(`Did permissions for: ${channelName}`);
+        console.log(`Did permissions for: ${channelName}`)
       },
     
       error => {
         console.error(`Couldn't manage ${channelName}!`)
-      }); 
+      }) 
   })
 }
 
 function prune(channel, numberOfMessages) {
   channel.fetchMessages({ limit: numberOfMessages }).then(messages => {
     messages.forEach(message => {
-      message.delete();
+      message.delete()
     })
   })
 }
 
 function authenticate(user) {
-  return user.id === '95623672072511488';
+  return user.id === '95623672072511488'
 }
