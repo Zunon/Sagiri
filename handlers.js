@@ -55,6 +55,10 @@ module.exports = {
       messages.forEach(message => {
         message.delete()
       })
+      channel.send(`Successfully pruned ${numberOfMessages-1} messages!`)
+        .then(message => {
+          message.delete(3000)
+      })
     })
   },
 
