@@ -42,7 +42,7 @@ client.login(`NDQ2NDEwODkwNTY5MzE4NDAw.Dd4oEQ.yCm3lDUQuEdWVAeyFyhWZiu3Djg`)
   .catch(error => {
     console.error(`Couldn't log in!\n${error}`)
     process.exit()
-  })
+})
 
 function joinChannel(message, text) {
   text.forEach(channelName => {
