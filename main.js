@@ -19,10 +19,18 @@ client.on(`message`, message => {
         leaveChannel(message, text);
         break;
       case `doroles`:
-        doRoles(message, text);
+        if (authenticate(message.member)) {
+          doRoles(message, text);
+        } else {
+            message.reply('you must be an authorized user to use this command!')
+        }
         break;
       case `prune`:
-        prune(message.channel, parseInt(text[0]) + 1);
+        if (authenticate(message.member)) {
+          prune(message.channel, parseInt(text[0]) + 1);
+        } else {
+          message.reply('you must be an authorized user to use this command!')
+        }
         break;
       default:
         message.reply("sorry I didn't recognize that command.");
@@ -93,5 +101,5 @@ function prune(channel, numberOfMessages) {
 }
 
 function authenticate(user) {
-
+  return user.id === '95623672072511488';
 }
