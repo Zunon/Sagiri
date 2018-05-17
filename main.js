@@ -1,74 +1,6 @@
 const Discord = require(`discord.js`)
+const handler = require('./handlers')
 const client = new Discord.Client()
-
-function joinChannel(message, text) {
-  text.forEach(channelName => {
-    var role = message.guild.roles.find(`name`, channelName)
-    message.member
-      .addRole(role)
-      .then(updated => {
-        console.log(`Added ${channelName} for ${message.member.displayName}`)
-        message.reply(`Added you to the \`${channelName}\` channel!`)
-      },
-      error => {
-        console.error(`could not add ${channelName} for ${message.member.displayName}!`)
-        message.reply(`Could not find that channel!`)
-      })
-  })
-}
-
-function leaveChannel(message, text) {
-  text.forEach( channelName => {
-    role = message.guild.roles.find(`name`, channelName)
-    message.member
-      .removeRole(role)
-      .then(updated => {
-        console.log(`Removed ${channelName} for ${message.member.displayName}`)
-        message.reply(`removed you from the \`${channelName}\` channel!`)
-      },
-
-      error => {
-        console.error(`could not remove ${channelName} for ${message.member.displayName}!`)
-        message.reply(`could not find that channel!`)
-      })
-  })
-}
-
-function doRoles(message) {
-  var guild = message.guild;
-  deleteAllRoles(guild);
-  client.channels.get(`442729303935811584`).children.forEach(channel => {
-    channel.roles
-    guild.createRole({name: channel.name}).then(role => {
-      channel.overwritePermissions(role, {READ_MESSAGES: true})
-        .then(() => {
-          console.log(`Did permissions for: ${channel.name}`)
-        },
-        () => {
-          console.error(`Couldn't manage ${channel.name}`)
-        }  
-      )
-    })
-  })
-}
-
-function prune(channel, numberOfMessages) {
-  channel.fetchMessages({ limit: numberOfMessages }).then(messages => {
-    messages.forEach(message => {
-      message.delete()
-    })
-  })
-}
-
-function authenticate(user) {
-  return user.id === '95623672072511488'
-}
-
-function deleteAllRoles(guild) {
-  guild.roles.forEach(role => {
-    role.delete();
-  })
-}
 
 client.on(`ready`, () => {
   console.log(`Logged in as ${client.user.tag}!`)
@@ -82,21 +14,21 @@ client.on(`message`, message => {
     
     switch(command) {
       case `joinchannel`:
-        joinChannel(message, text)
+        handler.joinChannel(message, text)
         break
       case `leavechannel`:
-        leaveChannel(message, text)
+        handler.leaveChannel(message, text)
         break
       case `doroles`:
-        if (authenticate(message.member)) {
-          doRoles(message)
+        if (handler.authenticate(message.member)) {
+          handler.doRoles(message)
         } else {
             message.reply('you must be an authorized user to use this command!')
         }
         break
       case `prune`:
-        if (authenticate(message.member)) {
-          prune(message.channel, parseInt(text[0]) + 1)
+        if (handler.authenticate(message.member)) {
+          handler.prune(message.channel, parseInt(text[0]) + 1)
         } else {
           message.reply('you must be an authorized user to use this command!')
         }
