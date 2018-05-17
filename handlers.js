@@ -1,5 +1,4 @@
 module.exports = {
-
   joinChannel: (message, text) => {
     text.forEach(channelName => {
       var role = message.guild.roles.find(`name`, channelName)
@@ -63,6 +62,7 @@ module.exports = {
     return user.id === '95623672072511488'
   }
 }
+
 function deleteAllRoles(guild) {
   guild.roles.forEach(role => {
     role.delete();
