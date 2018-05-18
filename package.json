@@ -1,0 +1,24 @@
+{
+  "name": "sagiri",
+  "version": "1.0.0",
+  "description": "simple bot to manage opt-in channels on my discord server",
+  "main": "main.js",
+  "dependencies": {
+    "discord.js": "^11.3.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node main"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Zunon/Sagiri.git"
+  },
+  "author": "Zunon",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Zunon/Sagiri/issues"
+  },
+  "homepage": "https://github.com/Zunon/Sagiri#readme"
+}
