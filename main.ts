@@ -33,6 +33,11 @@ client.on(`message`, (message: Message) => {
         and passes the message object and the arguments passed into
         the command
       */
+      /**
+       * joinchannel and leavechannel commands
+       * @deprecated
+       * @todo Remove at the start of summer 2018
+       */
       case `joinchannel`:
         joinChannel(message.member, message.guild, text)
         break
