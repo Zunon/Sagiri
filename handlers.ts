@@ -10,9 +10,10 @@ const reactionEvents = {
   ------------ FUNCTIONS ------------
 */
 /**
- * Add requested channel-role(s) to the user who sent the message
- * @param message Message object that contained the command
- * @param channels Array of requested channel names
+ * Add requested channel-role(s) to the user
+ * @param user User or GuildMember object to add the role to
+ * @param guild Guild object
+ * @param channels List of role-channels to add
  */
 export function joinChannel(user: GuildMember | User, guild: Guild, channels: string[]) {
   channels.forEach((channelName: string) => { // Iterate over requested channels
@@ -33,9 +34,10 @@ export function joinChannel(user: GuildMember | User, guild: Guild, channels: st
   )
 }
 /**
- * Remove requested channel-role(s) to the user who sent the message
- * @param message Message object that contained the command
- * @param channels Array of requested channel names
+ * Remove requested channel-role(s) to the user
+ * @param user User or GuildMember object to add the role to
+ * @param guild Guild object
+ * @param channels List of role-channels to add
  */
 export function leaveChannel(user: GuildMember | User, guild: Guild, channels: string[]) {
   channels.forEach((channelName: string) => { // Iterate over requested channels
@@ -106,6 +108,13 @@ export function prune(channel: TextChannel, numberOfMessages: number) {
 export function authenticate(user: GuildMember) {
   return user.id === '95623672072511488'
 }
+/**
+ * Filter through raw event data and emit messageReactionAdd and messageReactionRemove on non-cached messages
+ * @param rawEvent Raw event object to filter
+ * @param client Bot Client object
+ * @listens messageReactionAdd
+ * @listens messageReactionRemove
+ */
 export async function rawReactionEmitter(rawEvent: any, client: Client) {
   if(!reactionEvents.hasOwnProperty(rawEvent.t)) {
     return
