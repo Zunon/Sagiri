@@ -6,7 +6,6 @@ import { joinChannel, leaveChannel, doRoles, prune, authenticate } from "./handl
 import * as filesystem from "fs"
 // Instantiate a client to use it
 const client: Client = new Client()
-// Bot token from external file
 /*
   ------------ LISTENERS ------------
 */
@@ -79,7 +78,7 @@ client.on(`ready`, () => {
 /*
   ------------ EXECUTIONS ------------
 */
-// Attempt to login
+// Attempt to login by reading token from file
 filesystem.readFile(`./token.txt`,`utf8`,
   (error: NodeJS.ErrnoException, token: Buffer) => {
     client.login(token as any)
