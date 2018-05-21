@@ -6,5 +6,5 @@ Discord bot to manage opt-in channels, uses discord.js
 - `!prune N` - Delete `N` messages
 - `!doroles` - Setup guild with the opt-in system
 ## Things to add
-- [] Switch to using reactions on static messages to join channels
-- [] Implement basic voice music functions
+- [x] Switch to using reactions on static messages to join channels
+- [ ] Implement basic voice music functions
