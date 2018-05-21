@@ -3,8 +3,10 @@
 */
 import { Client, Message, TextChannel } from "discord.js" // Import needed classes from discord.js library
 import { joinChannel, leaveChannel, doRoles, prune, authenticate } from "./handlers" // import methods from my handler library
+import * as filesystem from "fs"
 // Instantiate a client to use it
 const client: Client = new Client()
+// Bot token from external file
 /*
   ------------ LISTENERS ------------
 */
@@ -78,8 +80,8 @@ client.on(`ready`, () => {
   ------------ EXECUTIONS ------------
 */
 // Attempt to login
-client.login(`NDQ2NDEwODkwNTY5MzE4NDAw.Dd4oEQ.yCm3lDUQuEdWVAeyFyhWZiu3Djg`)
-  .catch(error => {
-    console.error(`Couldn't log in!\n${error}`)
+filesystem.readFile(`./token.txt`,`utf8`,
+  (error: NodeJS.ErrnoException, token: Buffer) => {
+    client.login(token as any)
   }
 )
