@@ -11,14 +11,14 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node main"
+    "start": "ts-node main -O {target:ES6}"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Zunon/Sagiri.git"
   },
   "author": "Zunon",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/Zunon/Sagiri/issues"
   },
