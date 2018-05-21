@@ -2,6 +2,7 @@
   ------------ IMPORTS, INSTANCES, AND VARIABLES ------------
 */
 import { Message, Client, Channel, CategoryChannel, TextChannel, Role, Collection, GuildMember, Guild, User } from "discord.js"
+import config from '../config'
 const reactionEvents = {
   MESSAGE_REACTION_ADD: `messageReactionAdd`,
   MESSAGE_REACTION_REMOVE: `messageReactionRemove`
@@ -64,7 +65,7 @@ export function leaveChannel(user: GuildMember | User, guild: Guild, channels: s
 export function doRoles(guild: Guild) {
   deleteAllRoles(guild) // delete all existing roles to prevent role duplication
   // Get the CategoryChannel object for the "ONGOING DISCUSSION" channel category
-  let ongoingChannelCategory: CategoryChannel = guild.channels.get(`442729303935811584`) as CategoryChannel
+  let ongoingChannelCategory: CategoryChannel = guild.channels.get(config.channelCategory) as CategoryChannel
   ongoingChannelCategory.children.forEach((channel: TextChannel) => { // Iterate over the TextChannels inside it
     // Create a role that has the same name as the channel
     guild.createRole({ name: channel.name }).then((role: Role) => { // If role creation is a success
@@ -106,7 +107,7 @@ export function prune(channel: TextChannel, numberOfMessages: number) {
  * @todo Check for unterfuhrers and fuhrers as well
  */
 export function authenticate(user: GuildMember) {
-  return user.id === '95623672072511488'
+  return user.id === config.owner
 }
 /**
  * Filter through raw event data and emit messageReactionAdd and messageReactionRemove on non-cached messages

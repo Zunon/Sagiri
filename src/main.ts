@@ -21,7 +21,7 @@ client.on(`error`, (error: ErrorEvent) => console.error(`ERROR: ${error.message}
  */
 client.on(`message`, (message: Message) => {
   // Check if message is a command
-  if(message.content.startsWith('!')) {
+  if(message.content.startsWith(config.prefix)) {
     // Splits message into command and arguments
     var text: string[] = message.content.toLowerCase().split(` `)
     var command: string = text[0].substr(1)
@@ -74,7 +74,7 @@ client.on(`message`, (message: Message) => {
  * Handle adding reactions
  */
 client.on(`messageReactionAdd`, (reaction: MessageReaction, user: GuildMember) => {
-  if(reaction.message.channel.id === `446426631188381699`) {
+  if(reaction.message.channel.id === config.channelList) {
     joinChannel(user, reaction.message.guild, reaction.message.content.split(` `, 1))
   }
 })
@@ -82,7 +82,7 @@ client.on(`messageReactionAdd`, (reaction: MessageReaction, user: GuildMember) =
  * Handle removing reactions
  */
 client.on(`messageReactionRemove`, (reaction: MessageReaction, user: GuildMember) => {
-  if(reaction.message.channel.id === `446426631188381699`) {
+  if(reaction.message.channel.id === config.channelList) {
     leaveChannel(user, reaction.message.guild, reaction.message.content.split(` `, 1))
   }
 })
