@@ -1,7 +1,11 @@
 /*
   ------------ IMPORTS, INSTANCES, AND VARIABLES ------------
 */
-import { Message, Client, Channel, CategoryChannel, TextChannel, Role, Collection, GuildMember, Guild } from "discord.js"
+import { Message, Client, Channel, CategoryChannel, TextChannel, Role, Collection, GuildMember, Guild, User } from "discord.js"
+const reactionEvents = {
+  MESSAGE_REACTION_ADD: `messageReactionAdd`,
+  MESSAGE_REACTION_REMOVE: `messageReactionRemove`
+}
 /*
   ------------ FUNCTIONS ------------
 */
@@ -10,19 +14,19 @@ import { Message, Client, Channel, CategoryChannel, TextChannel, Role, Collectio
  * @param message Message object that contained the command
  * @param channels Array of requested channel names
  */
-export function joinChannel(message: Message, channels: string[]) {
+export function joinChannel(user: GuildMember | User, guild: Guild, channels: string[]) {
   channels.forEach((channelName: string) => { // Iterate over requested channels
-    let role: Role = message.guild.roles.find(`name`, channelName) // Find the needed role
-    message.member // Get the GuildMember object
+    let role: Role = guild.roles.find(`name`, channelName) // Find the needed role
+    guild.members.get(user.id) // Get the GuildMember object
       .addRole(role) // Add the needed role to it
       .then(
         () => { // If role addition was a success, print out on console and reply the confirmation
-          console.log(`Added ${channelName} for ${message.member.displayName}`)
-          message.reply(`Added you to the \`${channelName}\` channel!`)
+          console.log(`Added ${channelName} for ${user.id}`)
+          user.send(`Added you to the \`${channelName}\` channel!`)
         },
         () => { // If role addition was a failure, print out on console and reply the (un)confirmation(?)
-          console.error(`could not add ${channelName} for ${message.member.displayName}!`)
-          message.reply(`Could not find that channel!`)
+          console.error(`could not add ${channelName} for ${user.id}!`)
+          user.send(`Could not find that channel!`)
         }
       )
     }
@@ -33,19 +37,19 @@ export function joinChannel(message: Message, channels: string[]) {
  * @param message Message object that contained the command
  * @param channels Array of requested channel names
  */
-export function leaveChannel(message: Message, channels: string[]) {
+export function leaveChannel(user: GuildMember | User, guild: Guild, channels: string[]) {
   channels.forEach((channelName: string) => { // Iterate over requested channels
-    let role: Role = message.guild.roles.find(`name`, channelName) // Find the needed role
-    message.member // Get the GuildMember object
-      .removeRole(role) // Remove the needed role from it
+    let role: Role = guild.roles.find(`name`, channelName) // Find the needed role
+    guild.members.get(user.id) // Get the GuildMember object
+      .removeRole(role) // Add the needed role to it
       .then(
-        () => { // If role removal was a success, print out on console and reply the confirmation
-          console.log(`Removed ${channelName} for ${message.member.displayName}`)
-          message.reply(`removed you from the \`${channelName}\` channel!`)
+        () => { // If role addition was a success, print out on console and reply the confirmation
+          console.log(`Removed ${channelName} for ${user.id}`)
+          user.send(`Removed you from the \`${channelName}\` channel!`)
         },
-        () => { // If role removal was a failure, print out on console and reply the (un)confirmation(?)
-        console.error(`could not remove ${channelName} for ${message.member.displayName}!`)
-        message.reply(`could not find that channel!`)
+        () => { // If role addition was a failure, print out on console and reply the (un)confirmation(?)
+          console.error(`could not remove ${channelName} for ${user.id}!`)
+          user.send(`Could not find that channel!`)
         }
       )
     }
@@ -53,14 +57,12 @@ export function leaveChannel(message: Message, channels: string[]) {
 }
 /**
  * Re-create roles for the "ONGOING DISCUSSION" channel category
- * @param message Message object that contained the command
- * @param client Client object for the bot
+ * @param guild Guild object
  */
-export function doRoles(message: Message, client: Client) {
-  var guild = message.guild // get the Guild object
+export function doRoles(guild: Guild) {
   deleteAllRoles(guild) // delete all existing roles to prevent role duplication
   // Get the CategoryChannel object for the "ONGOING DISCUSSION" channel category
-  let ongoingChannelCategory: CategoryChannel = client.channels.get(`442729303935811584`) as CategoryChannel
+  let ongoingChannelCategory: CategoryChannel = guild.channels.get(`442729303935811584`) as CategoryChannel
   ongoingChannelCategory.children.forEach((channel: TextChannel) => { // Iterate over the TextChannels inside it
     // Create a role that has the same name as the channel
     guild.createRole({ name: channel.name }).then((role: Role) => { // If role creation is a success
@@ -103,6 +105,27 @@ export function prune(channel: TextChannel, numberOfMessages: number) {
  */
 export function authenticate(user: GuildMember) {
   return user.id === '95623672072511488'
+}
+export async function rawReactionEmitter(rawEvent: any, client: Client) {
+  if(!reactionEvents.hasOwnProperty(rawEvent.t)) {
+    return
+  }
+
+  const
+    { d: data } = rawEvent,
+    user: User = client.users.get(data.user_id),
+    channel: TextChannel = client.channels.get(data.channel_id) as TextChannel
+
+  if(channel.messages.has(data.message_id)) {
+    return
+  }
+
+  const
+    message: Message = await channel.fetchMessage(data.message_id),
+    emojiKey: string = (data.emoji.id) ? `${data.emoji.name}:${data.emoji.id}` : data.emoji.name,
+    reaction = message.reactions.get(emojiKey)
+  
+  client.emit(reactionEvents[rawEvent.t], reaction, user)
 }
 /**
  * Delete all roles in a guild

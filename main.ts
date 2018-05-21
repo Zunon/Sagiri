@@ -1,8 +1,8 @@
 /*
   ------------ IMPORTS, INSTANCES, AND VARIABLES ------------
 */
-import { Client, Message, TextChannel } from "discord.js" // Import needed classes from discord.js library
-import { joinChannel, leaveChannel, doRoles, prune, authenticate } from "./handlers" // import methods from my handler library
+import { Client, Message, TextChannel, MessageReaction, User, Channel, GuildMember } from "discord.js" // Import needed classes from discord.js library
+import { joinChannel, leaveChannel, doRoles, prune, authenticate, rawReactionEmitter } from "./handlers" // import methods from my handler library
 import * as filesystem from "fs"
 // Instantiate a client to use it
 const client: Client = new Client()
@@ -34,10 +34,10 @@ client.on(`message`, (message: Message) => {
         the command
       */
       case `joinchannel`:
-        joinChannel(message, text)
+        joinChannel(message.member, message.guild, text)
         break
       case `leavechannel`:
-        leaveChannel(message, text)
+        leaveChannel(message.member, message.guild, text)
         break
       /*
         If it's a command that requires elevation, it first checks
@@ -47,7 +47,7 @@ client.on(`message`, (message: Message) => {
       */
       case `doroles`:
         if (authenticate(message.member)) {
-          doRoles(message, client)
+          doRoles(message.guild)
         } else {
             message.reply('you must be an authorized user to use this command!')
         }
@@ -66,20 +66,34 @@ client.on(`message`, (message: Message) => {
   }
 })
 /**
+ * Handle adding reactions
+ */
+client.on(`messageReactionAdd`, (reaction: MessageReaction, user: GuildMember) => {
+  if(reaction.message.channel.id === `446426631188381699`) {
+    joinChannel(user, reaction.message.guild, reaction.message.content.split(` `, 1))
+  }
+})
+/**
+ * Handle removing reactions
+ */
+client.on(`messageReactionRemove`, (reaction: MessageReaction, user: GuildMember) => {
+  if(reaction.message.channel.id === `446426631188381699`) {
+    leaveChannel(user, reaction.message.guild, reaction.message.content.split(` `, 1))
+  }
+})
+client.on(`raw`, rawEvent => rawReactionEmitter(rawEvent, client))
+/**
  * As soon as the bot is up and ready, confirm to console
  * @listens ready
  */
 client.on(`ready`, () => {
   console.log(`Logged in as ${client.user.tag}!`)
 })
-/**
- * @todo Add event handlers to handle reactionAdd and reactionRemove
- */
 /*
   ------------ EXECUTIONS ------------
 */
 // Attempt to login by reading token from file
-filesystem.readFile(`./token.txt`,`utf8`,
+filesystem.readFile(`./token.txt`,`utf8`, 
   (error: NodeJS.ErrnoException, token: Buffer) => {
     client.login(token as any)
   }
