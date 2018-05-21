@@ -2,9 +2,7 @@ const Discord = require(`discord.js`)
 const handler = require('./handlers')
 const client = new Discord.Client()
 
-client.on(`ready`, () => {
-  console.log(`Logged in as ${client.user.tag}!`)
-})
+client.on(`error`, console.error)
 
 client.on(`message`, message => {
   if(message.content.startsWith('!')) {
@@ -37,6 +35,10 @@ client.on(`message`, message => {
         message.reply("sorry I didn't recognize that command.")
     }
   }
+})
+
+client.on(`ready`, () => {
+  console.log(`Logged in as ${client.user.tag}!`)
 })
 
 client.login(`NDQ2NDEwODkwNTY5MzE4NDAw.Dd4oEQ.yCm3lDUQuEdWVAeyFyhWZiu3Djg`)
