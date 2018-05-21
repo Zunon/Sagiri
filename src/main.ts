@@ -14,7 +14,7 @@ const client: Client = new Client()
  * @listens error
  * @todo Replace it to handle specific error events as they arise
  */
-client.on(`error`, console.error)
+client.on(`error`, (error: ErrorEvent) => console.error(`ERROR: ${error.message}`))
 /**
  * Parse commands and fires the appropriate handler
  * @listens message
