@@ -9,13 +9,13 @@ const client: Client = new Client()
   ------------ LISTENERS ------------
 */
 /**
- * Spits out unhandled errors without panicking
+ * Spit out unhandled errors without panicking
  * @listens error
  * @todo Replace it to handle specific error events as they arise
  */
 client.on(`error`, console.error)
 /**
- * Parses commands and fires the appropriate handler
+ * Parse commands and fires the appropriate handler
  * @listens message
  */
 client.on(`message`, (message: Message) => {
@@ -65,7 +65,7 @@ client.on(`message`, (message: Message) => {
   }
 })
 /**
- * As soon as the bot is up and ready, confirms to console
+ * As soon as the bot is up and ready, confirm to console
  * @listens ready
  */
 client.on(`ready`, () => {
