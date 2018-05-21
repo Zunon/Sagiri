@@ -3,7 +3,7 @@
 */
 import { Client, Message, TextChannel, MessageReaction, User, Channel, GuildMember } from "discord.js" // Import needed classes from discord.js library
 import { joinChannel, leaveChannel, doRoles, prune, authenticate, rawReactionEmitter } from "./handlers" // import methods from my handler library
-import * as filesystem from "fs"
+import config from "../config"
 // Instantiate a client to use it
 const client: Client = new Client()
 /*
@@ -98,8 +98,4 @@ client.on(`ready`, () => {
   ------------ EXECUTIONS ------------
 */
 // Attempt to login by reading token from file
-filesystem.readFile(`./token.txt`,`utf8`, 
-  (error: NodeJS.ErrnoException, token: Buffer) => {
-    client.login(token as any)
-  }
-)
+client.login(config.token)

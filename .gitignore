@@ -61,4 +61,4 @@ typings/
 .next
 
 # discord.js bot token
-token.txt
+config.ts
