@@ -54,20 +54,29 @@ client.on(`message`, (message: Message) => {
         if (authenticate(message.member)) {
           doRoles(message.guild)
         } else {
-            message.reply('you must be an authorized user to use this command!')
+            message.member.send('you must be an authorized user to use this command!')
         }
         break
       case `prune`:
         if (authenticate(message.member)) {
           prune(message.channel as TextChannel, parseInt(text[0]) + 1)
         } else {
-          message.reply('you must be an authorized user to use this command!')
+          message.member.send('you must be an authorized user to use this command!')
         }
         break
       // If the command wasn't recognized, it replies saying that the command wasn't recognized
       default:
-        message.reply("sorry I didn't recognize that command.")
+        message.member.send("sorry I didn't recognize that command.")
     }
+
+    message.delete().then(
+      () => {
+        console.log("Deleted command message.")
+      },
+      () => {
+        console.log("Couldn't delete message.")
+      }
+    )
   }
 })
 /**
